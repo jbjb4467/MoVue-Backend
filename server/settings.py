@@ -44,9 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -130,14 +132,14 @@ AUTH_USER_MODEL = 'accounts.User'
 
 # # cors 설정 전 rest_framework jwt 위해서 추가한 설정....
 # 인데 이거 하면 회원가입이 안됨. 이거 주석처리하면 회원가입은 됨.
-REST_FRAMEWORK = {
+# REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': (
     #     'rest_framework.permissions.IsAuthenticated',
     # ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-    ),
-}
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+#     ),
+# }
 
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
@@ -145,3 +147,7 @@ JWT_AUTH = {
 
 # admin // password123
 # "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjA1Nzg5NTk4LCJlbWFpbCI6IiJ9.6xJRomhfLZBgsYH--HyjCjaLKGDeNyNrCA3U4g_WEZ8"
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+]
