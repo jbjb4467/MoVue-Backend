@@ -19,5 +19,12 @@ class CommentSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Comment
-    fields = '__all__'
+    exclude = ('user',)
     read_only_fields = ('review',)
+
+
+class CommentListSerializer(serializers.ModelSerializer):
+
+  class Meta:
+    model = Comment
+    fields = '__all__'
