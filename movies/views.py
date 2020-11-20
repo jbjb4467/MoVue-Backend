@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 @api_view(['GET'])
 def movie_list(request):
   # movies = Movie.objects.all()
-  movies = Movie.objects.all()[:101]
+  movies = Movie.objects.all()[:10]
   serializer = MovieListSerializer(movies, many=True)
   return Response(serializer.data)
 
