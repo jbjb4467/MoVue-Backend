@@ -1,26 +1,28 @@
-from .models import Review, Comment
+from .models import Article, Comment
 from rest_framework import serializers
 
 
-class ReviewListSerializer(serializers.ModelSerializer):
+class ArticleSerializer(serializers.ModelSerializer):
+    
+  class Meta:
+    model = Article
+    exclude = ('user',)
+    # fields = '__all__'
+
+
+class ArticleListSerializer(serializers.ModelSerializer):
 
   class Meta:
-    model = Review
+    model = Article
     fields = '__all__'
-
-class ReviewSerializer(serializers.ModelSerializer):
-
-  class Meta:
-    model = Review
-    exclude = ('user', 'like_users',)
 
 
 class CommentSerializer(serializers.ModelSerializer):
-
+    
   class Meta:
     model = Comment
     exclude = ('user',)
-    read_only_fields = ('review',)
+    read_only_fields = ('article',)
 
 
 class CommentListSerializer(serializers.ModelSerializer):
