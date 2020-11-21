@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'accounts',
     'community',
     'movies',
-    'reviews',
 
     'django.contrib.admin',
     'django.contrib.auth',

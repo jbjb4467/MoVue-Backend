@@ -1,8 +1,15 @@
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
+
 from rest_framework import status
+from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from .serializers import UserSerializer
+from movies.serializers import ReviewListSerializer
+
+User = get_user_model()
 
 
 @api_view(['POST'])
@@ -21,3 +28,11 @@ def signup(request):
     user.save()
 
   return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET'])
+def profile(request, username):
+  person = get_object_or_404(User, username=username)
+  reviews = person.review_set.all()
+  serializer = ReviewListSerializer(reviews, many=True)
+  return Response(serializer.data, status=status.HTTP_200_OK)
