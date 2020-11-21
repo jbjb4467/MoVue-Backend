@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class Genre(models.Model):
@@ -22,6 +23,8 @@ class Movie(models.Model):
     original_language = models.CharField(max_length=20)
     original_title = models.CharField(max_length=200)
     adult = models.BooleanField()
+    like_user = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="like_movie", default=None)
+
 
     def __str__(self):
         return self.title
