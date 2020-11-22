@@ -38,7 +38,7 @@ def article_detail_update_delete(request, article_pk):
       return Response(serializer.data)
   else:
     article.delete()
-    return Response({'message': f'{article_pk}번 댓글이 정상적으로 삭제되었습니다.'}, status=status.HTTP_204_NO_CONTENT)
+    return Response({'message': f'{article_pk}번 댓글이 정상적으로 삭제되었습니다.', 'id': article_pk }, status=status.HTTP_204_NO_CONTENT)
 
 
 @authentication_classes([JSONWebTokenAuthentication])
@@ -74,4 +74,4 @@ def comment_detail_update_delete(request, article_pk, comment_pk):
       return Response(serializer.data)
   else:
     comment.delete()
-    return Response({'message': f'{comment_pk}번 댓글이 정상적으로 삭제되었습니다.'}, status=status.HTTP_204_NO_CONTENT)
+    return Response({'message': f'{comment_pk}번 댓글이 정상적으로 삭제되었습니다.', 'id': comment_pk }, status=status.HTTP_204_NO_CONTENT)
