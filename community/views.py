@@ -48,6 +48,7 @@ def comment_create_read(request, article_pk):
   if request.method == 'POST':
     article = get_object_or_404(Article, pk=article_pk)
     serializer = CommentSerializer(data=request.data)
+    print(serializer)
     if serializer.is_valid(raise_exception=True):
       serializer.save(article=article, user=request.user)
       return Response(serializer.data, status=status.HTTP_201_CREATED)
