@@ -21,7 +21,8 @@ class CommentSerializer(serializers.ModelSerializer):
     
   class Meta:
     model = Comment
-    exclude = ('user',)
+    # exclude = ('user',)
+    fields='__all__'
     read_only_fields = ('article',)
 
 
