@@ -55,7 +55,7 @@ def like(request, movie_id):
 @permission_classes([IsAuthenticated])
 def review_list_create(request, movie_id):
   if request.method == 'GET':
-    reviews = Review.objects.filter(pk=movie_id)
+    reviews = Review.objects.filter(movie_id_id=movie_id)
     serializer = ReviewListSerializer(reviews, many=True)
     return Response(serializer.data)
   
@@ -69,7 +69,7 @@ def review_list_create(request, movie_id):
 @api_view(['GET','PUT','DELETE'])
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
-def review_detail_update_delete(request, pk, review_pk):
+def review_detail_update_delete(request, movie_id, review_pk):
   review = get_object_or_404(Review, pk=review_pk)
   if request.method == 'GET':
     serializer = ReviewSerializer(review)
@@ -115,7 +115,7 @@ def review_recommend(request):
           if movie not in rec_genre:
             rec_genre.append(movie)
           cnt += 1
-      if cnt == 10:
+      if cnt == 20:
         break
   serializer = MovieListSerializer(rec_genre, many=True)
   return Response(serializer.data, status=status.HTTP_200_OK)
