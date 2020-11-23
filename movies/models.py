@@ -18,7 +18,7 @@ class Movie(models.Model):
     overview = models.TextField()
     poster_path = models.CharField(max_length=200)
     genres = models.ManyToManyField(Genre)
-    movie_id = models.IntegerField(unique=True)
+    id = models.IntegerField(primary_key=True)
     backdrop_path = models.CharField(max_length=200)
     original_language = models.CharField(max_length=20)
     original_title = models.CharField(max_length=200)
@@ -32,7 +32,7 @@ class Movie(models.Model):
 
 class Review(models.Model):
   title = models.CharField(max_length=100)
-  movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE, to_field="movie_id")
+  movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE)
   rank = models.IntegerField()
   content = models.TextField()
   created_at = models.DateTimeField(auto_now_add=True)
