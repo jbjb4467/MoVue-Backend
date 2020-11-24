@@ -23,7 +23,7 @@ def article_create_read(request):
       serializer.save(user=request.user, username=request.user)
       return Response(serializer.data, status=status.HTTP_201_CREATED)
   else:
-    articles = Article.objects.all()
+    articles = Article.objects.all().order_by('-pk')
     serializer = ArticleListSerializer(articles, many=True)
     return Response(serializer.data)
 
