@@ -1,12 +1,17 @@
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
+
 from .models import Article, Comment
 from .serializers import ArticleListSerializer, ArticleSerializer, CommentListSerializer, CommentSerializer
+
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+
+User = get_user_model()
 
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -15,7 +20,7 @@ def article_create_read(request):
   if request.method == 'POST':
     serializer = ArticleSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
-      serializer.save(user=request.user)
+      serializer.save(user=request.user, username=request.user)
       return Response(serializer.data, status=status.HTTP_201_CREATED)
   else:
     articles = Article.objects.all()
@@ -28,17 +33,20 @@ def article_create_read(request):
 @api_view(['GET', 'PUT', 'DELETE'])
 def article_detail_update_delete(request, article_pk):
   article = get_object_or_404(Article, pk=article_pk)
-  if request.method == 'GET':
-    serializer = ArticleSerializer(article)
-    return Response(serializer.data)
-  elif request.method == 'PUT':
-    serializer = ArticleSerializer(article, data=request.data)
-    if serializer.is_valid(raise_exception=True):
-      serializer.save()
+  if request.user == article.user:
+    if request.method == 'GET':
+      serializer = ArticleSerializer(article)
       return Response(serializer.data)
+    elif request.method == 'PUT':
+      serializer = ArticleSerializer(article, data=request.data)
+      if serializer.is_valid(raise_exception=True):
+        serializer.save()
+        return Response(serializer.data)
+    else:
+      article.delete()
+      return Response({'message': f'{article_pk}번 댓글이 정상적으로 삭제되었습니다.', 'id': article_pk }, status=status.HTTP_204_NO_CONTENT)
   else:
-    article.delete()
-    return Response({'message': f'{article_pk}번 댓글이 정상적으로 삭제되었습니다.', 'id': article_pk }, status=status.HTTP_204_NO_CONTENT)
+    return Response({'error':'니가 쓴 글 아니잖아.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 @authentication_classes([JSONWebTokenAuthentication])
