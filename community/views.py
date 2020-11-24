@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 
 from .models import Article, Comment
@@ -33,20 +33,21 @@ def article_create_read(request):
 @api_view(['GET', 'PUT', 'DELETE'])
 def article_detail_update_delete(request, article_pk):
   article = get_object_or_404(Article, pk=article_pk)
-  if request.user == article.user:
-    if request.method == 'GET':
-      serializer = ArticleSerializer(article)
-      return Response(serializer.data)
-    elif request.method == 'PUT':
-      serializer = ArticleSerializer(article, data=request.data)
-      if serializer.is_valid(raise_exception=True):
-        serializer.save()
-        return Response(serializer.data)
-    else:
-      article.delete()
-      return Response({'message': f'{article_pk}번 댓글이 정상적으로 삭제되었습니다.', 'id': article_pk }, status=status.HTTP_204_NO_CONTENT)
+  if request.method == 'GET':
+    serializer = ArticleSerializer(article)
+    return Response(serializer.data)
   else:
-    return Response({'error':'니가 쓴 글 아니잖아.'}, status=status.HTTP_401_UNAUTHORIZED)
+    if request.user == article.user:
+      if request.method == 'PUT':
+        serializer = ArticleSerializer(article, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+          serializer.save()
+          return Response(serializer.data)
+      else:
+        article.delete()
+        return Response({'message': f'{article_pk}번 댓글이 정상적으로 삭제되었습니다.', 'id': article_pk }, status=status.HTTP_204_NO_CONTENT)
+    else:
+      return Response({'error':'니가 쓴 글 아니잖아.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 @authentication_classes([JSONWebTokenAuthentication])
@@ -56,9 +57,8 @@ def comment_create_read(request, article_pk):
   if request.method == 'POST':
     article = get_object_or_404(Article, pk=article_pk)
     serializer = CommentSerializer(data=request.data)
-    print(serializer)
     if serializer.is_valid(raise_exception=True):
-      serializer.save(article=article, user=request.user)
+      serializer.save(article=article, user=request.user, username=request.user)
       return Response(serializer.data, status=status.HTTP_201_CREATED)
   else:
     article = get_object_or_404(Article, pk=article_pk)
@@ -75,11 +75,15 @@ def comment_detail_update_delete(request, article_pk, comment_pk):
   if request.method == 'GET':
     serializer = CommentSerializer(comment)
     return Response(serializer.data)
-  elif request.method == 'PUT':
-    serializer = CommentSerializer(comment, data=request.data)
-    if serializer.is_valid(raise_exception=True):
-      serializer.save()
-      return Response(serializer.data)
   else:
-    comment.delete()
-    return Response({'message': f'{comment_pk}번 댓글이 정상적으로 삭제되었습니다.', 'id': comment_pk }, status=status.HTTP_204_NO_CONTENT)
+    if request.user == comment.user:
+      if request.method == 'PUT':
+        serializer = CommentSerializer(comment, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+          serializer.save()
+          return Response(serializer.data)
+      else:
+        comment.delete()
+        return Response({'message': f'{comment_pk}번 댓글이 정상적으로 삭제되었습니다.', 'id': comment_pk }, status=status.HTTP_204_NO_CONTENT)
+    else:
+      return Response({'error':'니가 쓴 댓글 아니잖아.'}, status=status.HTTP_401_UNAUTHORIZED)

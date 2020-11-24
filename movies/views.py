@@ -62,7 +62,7 @@ def review_list_create(request, movie_id):
   else:
     serializer = ReviewSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
-      serializer.save(user=request.user)
+      serializer.save(user=request.user, username=request.user, movie_id_id=movie_id)
       # print(serializer)
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -75,14 +75,18 @@ def review_detail_update_delete(request, movie_id, review_pk):
   if request.method == 'GET':
     serializer = ReviewSerializer(review)
     return Response(serializer.data)
-  elif request.method == 'PUT':
-    serializer = ReviewSerializer(review, data=request.data)
-    if serializer.is_valid(raise_exception=True):
-      serializer.save()
-      return Response(serializer.data, status=status.HTTP_201_CREATED)
   else:
-    review.delete()
-    return Response({'message': f'{review_pk}번 댓글이 정상적으로 삭제되었습니다.', 'id': review_pk }, status=status.HTTP_204_NO_CONTENT)
+    if request.user == review.user:
+      if request.method == 'PUT':
+        serializer = ReviewSerializer(review, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+          serializer.save()
+          return Response(serializer.data, status=status.HTTP_201_CREATED)
+      else:
+        review.delete()
+        return Response({'message': f'{review_pk}번 댓글이 정상적으로 삭제되었습니다.', 'id': review_pk }, status=status.HTTP_204_NO_CONTENT)
+    else:
+      return Response({'error':'니가 쓴 리뷰 아니잖아.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 @api_view(['GET'])
