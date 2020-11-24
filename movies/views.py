@@ -116,7 +116,7 @@ def review_recommend(request):
           if movie not in rec_genre:
             rec_genre.append(movie)
           cnt += 1
-      if cnt == 10:
+      if cnt == 20:
         break
   serializer = MovieListSerializer(rec_genre, many=True)
   return Response(serializer.data, status=status.HTTP_200_OK)
