@@ -3,10 +3,9 @@ import operator
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
 
 from .models import Movie, Review, Genre
-from .serializers import MovieDetailSerializer, MovieListSerializer, ReviewSerializer, ReviewListSerializer
+from .serializers import MovieDetailSerializer, MovieListSerializer, ReviewSerializer, ReviewListSerializer, MovieTitleSerializer
 
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
@@ -17,8 +16,15 @@ from rest_framework.response import Response
 
 @api_view(['GET'])
 def movie_list(request):
-  movies = Movie.objects.all()[:10]
-  serializer = MovieListSerializer(movies, many=True)
+  movies = Movie.objects.all()
+  serializer = MovieTitleSerializer(movies, many=True)
+  return Response(serializer.data)
+
+
+@api_view(['GET'])
+def movie_detail_by_title(request, movie_title):
+  movie = Movie.objects.get(title=movie_title)
+  serializer = MovieDetailSerializer(movie)
   return Response(serializer.data)
 
 
