@@ -18,7 +18,7 @@ def signup(request):
   password_confirm = request.data.get('passwordConfirm')
 
   if password != password_confirm:
-    return Response({'error': '비밀번호가 일치하지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'error': '비밀번호가 일치하지 않습니다.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
   serializer = UserSerializer(data=request.data)
   
