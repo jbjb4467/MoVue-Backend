@@ -16,14 +16,14 @@ User = get_user_model()
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['GET','POST'])
-def article_create_read(request):
+def article_create_read(request, category):
   if request.method == 'POST':
     serializer = ArticleSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
-      serializer.save(user=request.user, username=request.user)
+      serializer.save(user=request.user, username=request.user, category=category)
       return Response(serializer.data, status=status.HTTP_201_CREATED)
   else:
-    articles = Article.objects.all().order_by('-pk')
+    articles = Article.objects.filter(category=category).order_by('-pk')
     serializer = ArticleListSerializer(articles, many=True)
     return Response(serializer.data)
 
@@ -31,7 +31,7 @@ def article_create_read(request):
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['GET', 'PUT', 'DELETE'])
-def article_detail_update_delete(request, article_pk):
+def article_detail_update_delete(request, category, article_pk):
   article = get_object_or_404(Article, pk=article_pk)
   if request.method == 'GET':
     serializer = ArticleSerializer(article)
@@ -53,7 +53,7 @@ def article_detail_update_delete(request, article_pk):
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['GET','POST'])
-def comment_create_read(request, article_pk):
+def comment_create_read(request, category, article_pk):
   if request.method == 'POST':
     article = get_object_or_404(Article, pk=article_pk)
     serializer = CommentSerializer(data=request.data)
@@ -70,7 +70,7 @@ def comment_create_read(request, article_pk):
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['GET', 'PUT', 'DELETE'])
-def comment_detail_update_delete(request, article_pk, comment_pk):
+def comment_detail_update_delete(request, category, article_pk, comment_pk):
   comment = get_object_or_404(Comment, pk=comment_pk)
   if request.method == 'GET':
     serializer = CommentSerializer(comment)
