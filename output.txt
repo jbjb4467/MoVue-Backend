@@ -1,0 +1,59 @@
+|   .gitignore
+|   db.sqlite3
+|   manage.py
+|   output.txt
+|   requirements.txt
+|   
++---.idea
++---.vscode
+|       settings.json
+|       
++---accounts
+|   |   admin.py
+|   |   apps.py
+|   |   models.py
+|   |   serializers.py
+|   |   tests.py
+|   |   urls.py
+|   |   views.py
+|   |   __init__.py
+|   |   
+|   +---migrations
+|           
++---community
+|   |   admin.py
+|   |   apps.py
+|   |   models.py
+|   |   serializers.py
+|   |   tests.py
+|   |   urls.py
+|   |   views.py
+|   |   __init__.py
+|   |   
+|   +---migrations
+|           
++---movies
+|   |   admin.py
+|   |   apps.py
+|   |   models.py
+|   |   serializers.py
+|   |   tests.py
+|   |   urls.py
+|   |   views.py
+|   |   __init__.py
+|   |   
+|   +---fixtures
+|   |       genres.json
+|   |       movies_db99.json
+|           
++---reviews
+|   +---migrations
+|           
++---server
+|   |   asgi.py
+|   |   settings.py
+|   |   urls.py
+|   |   wsgi.py
+|   |   __init__.py
+|           
+\---venv
