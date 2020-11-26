@@ -34,7 +34,6 @@ class Review(models.Model):
   comment = models.CharField(max_length=100)
   movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE)
   rank = models.IntegerField()
-  # content = models.TextField()
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
   user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -42,7 +41,7 @@ class Review(models.Model):
   like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_reviews')
 
   def __str__(self):
-    return self.title
+    return self.comment
 
 
     
